@@ -1,6 +1,7 @@
 const Url = require("../models/Url.model");
 const Visit = require("../models/Visit.model");
 const UAParser = require("ua-parser-js");
+const geoip = require("geoip-lite");
 
 const redirectToOriginalUrl = async (req, res) => {
   try {
@@ -29,6 +30,8 @@ const redirectToOriginalUrl = async (req, res) => {
     await Visit.create({
       url: url._id,
       ip: req.headers["x-forwarded-for"] || req.socket.remoteAddress,
+      country: geoip.lookup(req.headers["x-forwarded-for"] || req.socket.remoteAddress)?.country || "Unknown",
+      city: geoip.lookup(req.headers["x-forwarded-for"] || req.socket.remoteAddress)?.city || "Unknown",
       browser: result.browser.name || "Unknown",
       os: result.os.name || "Unknown",
       device: result.device.type || "Desktop",

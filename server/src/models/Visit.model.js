@@ -31,6 +31,13 @@ const visitSchema = new mongoose.Schema(
     userAgent: {
       type: String,
     },
+    country: {
+  type: String,
+},
+
+city: {
+  type: String,
+},
   },
   {
     timestamps: true,
