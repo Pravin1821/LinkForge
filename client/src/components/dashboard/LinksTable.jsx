@@ -108,6 +108,9 @@ function LinkRow({ url, activeMenu, setActiveMenu, onDelete, onEdit }) {
           </span>
         </td>
         <td className="px-5 py-3 align-top">
+          <LinkStatusBadge url={url} />
+        </td>
+        <td className="px-5 py-3 align-top">
           <span className="text-tertiary whitespace-nowrap text-xs">
             {new Date(url.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
           </span>
@@ -169,7 +172,12 @@ function LinkRow({ url, activeMenu, setActiveMenu, onDelete, onEdit }) {
                     )}
                     <div className="my-1 h-px bg-[var(--border)]" />
                     <button 
-                      onClick={() => { onDelete(url._id); setActiveMenu(null); }}
+                      onClick={() => { 
+                        if (window.confirm("Are you sure you want to delete this link?")) {
+                          onDelete(url._id); 
+                        }
+                        setActiveMenu(null); 
+                      }}
                       className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-xs text-rose-500 hover:bg-rose-500/10"
                     >
                       <Trash2 className="h-3.5 w-3.5" /> Delete
@@ -198,5 +206,62 @@ function LinkRow({ url, activeMenu, setActiveMenu, onDelete, onEdit }) {
         </div>
       )}
     </>
+  );
+}
+
+function LinkStatusBadge({ url }) {
+  if (url.isActive === false) {
+    return (
+      <div className="flex flex-col gap-0.5">
+        <span className="inline-flex w-fit items-center rounded-md bg-rose-500/10 px-2 py-0.5 text-[10px] font-medium text-rose-500">
+          Disabled
+        </span>
+      </div>
+    );
+  }
+
+  if (!url.expiresAt) {
+    return (
+      <div className="flex flex-col gap-0.5">
+        <span className="inline-flex w-fit items-center rounded-md bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-500">
+          Active
+        </span>
+        <span className="text-[10px] text-tertiary">Never expires</span>
+      </div>
+    );
+  }
+
+  const expiry = new Date(url.expiresAt);
+  const now = new Date();
+  
+  if (expiry < now) {
+    return (
+      <div className="flex flex-col gap-0.5">
+        <span className="inline-flex w-fit items-center rounded-md bg-rose-500/10 px-2 py-0.5 text-[10px] font-medium text-rose-500">
+          Expired
+        </span>
+        <span className="text-[10px] text-tertiary">
+          {Math.floor((now - expiry) / (1000 * 60 * 60 * 24))}d ago
+        </span>
+      </div>
+    );
+  }
+
+  const diffMs = expiry - now;
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const diffHrs = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+  let timeString = "";
+  if (diffDays > 0) timeString += `${diffDays}d `;
+  if (diffHrs > 0 || diffDays === 0) timeString += `${diffHrs}h`;
+  if (timeString === "") timeString = "< 1h";
+
+  return (
+    <div className="flex flex-col gap-0.5">
+      <span className="inline-flex w-fit items-center rounded-md bg-amber-500/10 px-2 py-0.5 text-[10px] font-medium text-amber-500">
+        Expires soon
+      </span>
+      <span className="text-[10px] text-tertiary">In {timeString.trim()}</span>
+    </div>
   );
 }

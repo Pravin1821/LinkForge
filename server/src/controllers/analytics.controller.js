@@ -51,6 +51,8 @@ const getUrlAnalytics = async (req, res) => {
           browser: visit.browser,
           os: visit.os,
           device: visit.device,
+          country: visit.country,
+          referrer: visit.referrer,
         })),
       },
     });
@@ -155,6 +157,7 @@ const getWorkspaceAnalytics = async (req, res) => {
           city: visit.city,
           browser: visit.browser,
           device: visit.device,
+          referrer: visit.referrer,
         })),
         countryStats: countryAggregation,
         cityStats: cityAggregation
@@ -169,5 +172,6 @@ const getWorkspaceAnalytics = async (req, res) => {
 module.exports = {
   getUrlAnalytics,
   getClickTrends,
+  getWorkspaceAnalytics,
   getWorkspaceAnalytics,
 };

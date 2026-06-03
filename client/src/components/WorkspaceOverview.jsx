@@ -25,7 +25,7 @@ export function WorkspaceOverview({
           Workspace
         </h1>
         <p className="mt-0.5 text-sm text-secondary">
-          Short links and click performance at a glance.
+          Manage your short links and track engagement.
         </p>
       </div>
 

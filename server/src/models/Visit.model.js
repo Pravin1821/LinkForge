@@ -32,12 +32,14 @@ const visitSchema = new mongoose.Schema(
       type: String,
     },
     country: {
-  type: String,
-},
-
-city: {
-  type: String,
-},
+      type: String,
+    },
+    city: {
+      type: String,
+    },
+    referrer: {
+      type: String,
+    },
   },
   {
     timestamps: true,

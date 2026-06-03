@@ -121,7 +121,7 @@ export function CreateLinkModal() {
                         className="input-field"
                       />
                     </Field>
-                    <Field label="Custom alias">
+                    <Field label="Custom alias (Optional)">
                       <input
                         type="text"
                         value={customAlias}
@@ -130,14 +130,52 @@ export function CreateLinkModal() {
                         className="input-field"
                       />
                     </Field>
-                    <Field label="Expires">
-                      <input
-                        type="datetime-local"
-                        value={expiresAt}
-                        onChange={(e) => setExpiresAt(e.target.value)}
-                        className="input-field"
-                      />
-                    </Field>
+                    
+                    <div className="space-y-2">
+                      <label className="block text-left text-xs font-medium text-secondary">Expiration</label>
+                      <div className="flex gap-2">
+                        <label className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--bg-surface)] px-3 py-2 text-xs font-medium text-primary hover:bg-[var(--bg-muted)] transition-all has-[:checked]:border-[var(--accent)] has-[:checked]:bg-[var(--accent)]/5 has-[:checked]:text-[var(--accent)]">
+                          <input 
+                            type="radio" 
+                            name="expirationType" 
+                            className="hidden" 
+                            checked={!expiresAt} 
+                            onChange={() => setExpiresAt("")} 
+                          />
+                          Never Expire
+                        </label>
+                        <label className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--bg-surface)] px-3 py-2 text-xs font-medium text-primary hover:bg-[var(--bg-muted)] transition-all has-[:checked]:border-[var(--accent)] has-[:checked]:bg-[var(--accent)]/5 has-[:checked]:text-[var(--accent)]">
+                          <input 
+                            type="radio" 
+                            name="expirationType" 
+                            className="hidden" 
+                            checked={!!expiresAt} 
+                            onChange={() => {
+                              const tmr = new Date();
+                              tmr.setDate(tmr.getDate() + 1);
+                              // Format for datetime-local: YYYY-MM-DDThh:mm
+                              const tzoffset = (new Date()).getTimezoneOffset() * 60000;
+                              const localISOTime = (new Date(tmr - tzoffset)).toISOString().slice(0, 16);
+                              setExpiresAt(localISOTime);
+                            }} 
+                          />
+                          Custom Date
+                        </label>
+                      </div>
+                      
+                      {expiresAt !== "" && (
+                        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }}>
+                          <input
+                            type="datetime-local"
+                            value={expiresAt}
+                            onChange={(e) => setExpiresAt(e.target.value)}
+                            min={new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)}
+                            className="input-field mt-2"
+                            required
+                          />
+                        </motion.div>
+                      )}
+                    </div>
                     {error ? (
                       <p className="text-sm text-[#C14C4C]">{error}</p>
                     ) : null}

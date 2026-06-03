@@ -3,6 +3,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AppShell from "./layouts/AppShell";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ExpiredLink from "./pages/ExpiredLink";
 import { DashboardPage } from "./pages/Dashboard";
 import { AnalyticsPage } from "./pages/Analytics";
 import { SettingsPage } from "./pages/Settings";
@@ -12,6 +13,7 @@ export default function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/expired" element={<ExpiredLink />} />
 
       <Route element={<ProtectedRoute />}>
         <Route element={<AppShell />}>

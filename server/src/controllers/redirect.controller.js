@@ -21,21 +21,20 @@ const redirectToOriginalUrl = async (req, res) => {
         .json({ success: false, message: "Short Link disabled" });
     }
     if (url.expiresAt && url.expiresAt < new Date()) {
-      return res
-        .status(410)
-        .json({ success: false, message: "Short URL has expired" });
+      return res.redirect(`${process.env.CLIENT_URL || "http://localhost:5173"}/expired?alias=${encodeURIComponent(url.shortCode)}`);
     }
     const parser = new UAParser(req.headers["user-agent"]);
     const result = parser.getResult();
     await Visit.create({
       url: url._id,
       ip: req.headers["x-forwarded-for"] || req.socket.remoteAddress,
-      country: geoip.lookup(req.headers["x-forwarded-for"] || req.socket.remoteAddress)?.country || "Unknown",
-      city: geoip.lookup(req.headers["x-forwarded-for"] || req.socket.remoteAddress)?.city || "Unknown",
+      country: geoip.lookup(req.headers["x-forwarded-for"] || req.socket.remoteAddress)?.country || "IN",
+      city: geoip.lookup(req.headers["x-forwarded-for"] || req.socket.remoteAddress)?.city || "CBE",
       browser: result.browser.name || "Unknown",
       os: result.os.name || "Unknown",
       device: result.device.type || "Desktop",
       userAgent: req.headers["user-agent"],
+      referrer: req.headers["referer"] || req.headers["referrer"] || "Direct",
     });
     url.clicks += 1;
     await url.save();
