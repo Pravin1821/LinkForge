@@ -19,6 +19,8 @@ const startServer = async () => {
 
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+    console.log(`BASE_URL: ${process.env.BASE_URL || 'Not Set (using request host)'}`);
+    console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
   });
 };
 
