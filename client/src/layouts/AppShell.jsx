@@ -11,8 +11,7 @@ import {
   Settings,
   X,
   QrCode,
-  Download,
-  ChevronDown
+  Download
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { getStoredUser } from "../lib/authStorage";
@@ -107,12 +106,7 @@ function AppShellLayout() {
             </span>
             <div className="flex flex-col">
               <span className="text-sm font-semibold text-primary leading-tight">Forge Links</span>
-              <div className="flex items-center gap-1.5 mt-0.5">
-                <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                <span className="text-[10px] font-medium text-secondary">Free Plan</span>
-              </div>
             </div>
-            <ChevronDown className="ml-auto h-4 w-4 text-tertiary" />
           </Link>
           <button
             type="button"

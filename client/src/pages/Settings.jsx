@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../hooks/useAuth";
 import { updateProfile, updatePassword, deleteAccount } from "../services/api";
 
-const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/$/, "") || "http://localhost:5000";
+import { API_BASE_URL } from "../config/api";
 
 export function SettingsPage() {
   const { user, updateSessionUser, logout } = useAuth();
@@ -23,7 +23,7 @@ export function SettingsPage() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch(`${API_BASE}/`)
+    fetch(`${API_BASE_URL}/`)
       .then((r) => {
         if (!cancelled) setApiStatus(r.ok ? "online" : "degraded");
       })
@@ -106,7 +106,7 @@ export function SettingsPage() {
                           API Endpoint
                           <StatusPill status={apiStatus} />
                         </p>
-                        <p className="text-xs text-secondary font-mono">{API_BASE}</p>
+                        <p className="text-xs text-secondary font-mono">{API_BASE_URL}</p>
                       </div>
                     </div>
                   </div>
