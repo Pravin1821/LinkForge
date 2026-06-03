@@ -94,7 +94,80 @@ const getClickTrends = async (req, res) => {
   }
 };
 
+const getWorkspaceAnalytics = async (req, res) => {
+  try {
+    const urls = await Url.find({ user: req.user.id });
+    const urlIds = urls.map((url) => url._id);
+    
+    const totalLinks = urls.length;
+    const activeLinks = urls.filter(u => u.isActive !== false).length;
+    const totalClicks = urls.reduce((acc, url) => acc + (url.clicks || 0), 0);
+
+    const recentVisits = await Visit.find({ url: { $in: urlIds } })
+      .sort({ timestamp: -1 })
+      .limit(20)
+      .populate("url", "shortCode originalUrl");
+
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    
+    const chartData = await Visit.aggregate([
+      { $match: { url: { $in: urlIds }, timestamp: { $gte: thirtyDaysAgo } } },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$timestamp" } },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    const countryAggregation = await Visit.aggregate([
+      { $match: { url: { $in: urlIds } } },
+      { $group: { _id: "$country", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 5 }
+    ]);
+    
+    const cityAggregation = await Visit.aggregate([
+      { $match: { url: { $in: urlIds } } },
+      { $group: { _id: "$city", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 5 }
+    ]);
+
+    res.status(200).json({
+      success: true,
+      analytics: {
+        totalLinks,
+        activeLinks,
+        totalClicks,
+        chartData: chartData.map((item) => ({
+          date: item._id,
+          clicks: item.count,
+        })),
+        recentVisits: recentVisits.map((visit) => ({
+          _id: visit._id,
+          url: visit.url,
+          timestamp: visit.timestamp,
+          ip: visit.ip,
+          country: visit.country,
+          city: visit.city,
+          browser: visit.browser,
+          device: visit.device,
+        })),
+        countryStats: countryAggregation,
+        cityStats: cityAggregation
+      },
+    });
+  } catch (error) {
+    console.error("Get Workspace Analytics Error:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
 module.exports = {
   getUrlAnalytics,
   getClickTrends,
+  getWorkspaceAnalytics,
 };

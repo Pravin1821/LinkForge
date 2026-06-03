@@ -1,4 +1,4 @@
-export function buildTrendFromVisits(visits, days = 14) {
+export function buildTrendFromVisits(visits, days = 90) {
   const counts = new Map();
 
   for (const visit of visits || []) {

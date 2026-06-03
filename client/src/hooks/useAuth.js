@@ -49,6 +49,11 @@ export function useAuth() {
     [navigate],
   );
 
+  const updateSessionUser = useCallback((updatedUser) => {
+    setAuth({ token: getToken(), user: updatedUser });
+    setUser(updatedUser);
+  }, []);
+
   return {
     user,
     token,
@@ -56,5 +61,6 @@ export function useAuth() {
     login,
     register,
     logout,
+    updateSessionUser,
   };
 }
