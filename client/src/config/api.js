@@ -9,7 +9,11 @@ const getApiUrl = () => {
     return envUrl.replace(/\/$/, "");
   }
   
-  // Fallback for development if no env var is provided
+  if (import.meta.env.PROD) {
+    console.warn("VITE_API_URL is not defined in production environment variables. Requests will likely fail.");
+  }
+  
+  // Fallback for development
   return "http://localhost:5000";
 };
 

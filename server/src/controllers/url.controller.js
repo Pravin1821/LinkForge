@@ -30,7 +30,12 @@ const createShortUrl = async (req, res) => {
     }
 
     const code = normalizedAlias || generateShortCode();
-    const baseUrl = process.env.BASE_URL || "http://localhost:5000";
+    
+    // Smart fallback for BASE_URL: prioritize env var, then current host
+    const protocol = req.secure || req.headers['x-forwarded-proto'] === 'https' ? 'https' : 'http';
+    const hostFallback = `${protocol}://${req.get('host')}`;
+    const baseUrl = process.env.BASE_URL || hostFallback;
+    
     const shortUrl = `${baseUrl}/${code}`;
     const qrCode = await generateQRCode(shortUrl);
 

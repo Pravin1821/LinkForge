@@ -21,7 +21,8 @@ const redirectToOriginalUrl = async (req, res) => {
         .json({ success: false, message: "Short Link disabled" });
     }
     if (url.expiresAt && url.expiresAt < new Date()) {
-      return res.redirect(`${process.env.CLIENT_URL || "http://localhost:5173"}/expired?alias=${encodeURIComponent(url.shortCode)}`);
+      const clientUrl = process.env.CLIENT_URL || (process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5173');
+      return res.redirect(`${clientUrl}/expired?alias=${encodeURIComponent(url.shortCode)}`);
     }
     const parser = new UAParser(req.headers["user-agent"]);
     const result = parser.getResult();

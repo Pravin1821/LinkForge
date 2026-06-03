@@ -2,14 +2,19 @@ const express = require('express');
 const cors = require('cors');
 
 const app = express();
-const allowedOrigins = process.env.FRONTEND_URL.split(',');
+const allowedOrigins = process.env.FRONTEND_URL 
+  ? process.env.FRONTEND_URL.split(',').map(url => url.trim()) 
+  : [];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.length === 0 || allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
         callback(null, true);
       } else {
+        console.warn(`CORS blocked for origin: ${origin}`);
         callback(new Error('CORS not allowed'));
       }
     },
