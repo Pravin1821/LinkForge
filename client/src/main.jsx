@@ -6,8 +6,10 @@ import "./index.css";
 import App from "./App.jsx";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
 import { initTheme } from "./lib/theme";
+import { verifyApiConfig } from "./config/api";
 
 initTheme();
+verifyApiConfig();
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
