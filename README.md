@@ -1,63 +1,117 @@
+<div align="center">
+
 # 🔗 Forge Links
 
+**The Next-Generation URL Shortener & Analytics Platform**
 
-
-**Forge Links** is a modern, full-stack URL shortening and analytics platform designed for individuals and teams who need more than just a short link. It provides deep insights into traffic, customizable link behavior, and professional-grade management tools.
-
----
-
-## 🚀 Features
-
--   **URL Shortening:** Transform long, cumbersome URLs into sleek, manageable links.
--   **Custom Aliases:** Create branded links with personalized slugs (e.g., `/my-brand`).
--   **QR Code Generation:** Every link automatically generates a high-quality QR code for offline sharing.
--   **Click Tracking:** Real-time monitoring of every interaction.
--   **Analytics Dashboard:** Comprehensive visual data including browser, OS, and device distribution.
--   **User Authentication:** Secure JWT-based registration and login system.
--   **Link Expiration:** Set "best before" dates for links to automatically revoke access.
--   **Profile Management:** Update account details and security credentials seamlessly.
--   **Activity Feed:** Keep track of recent clicks and link creations at a glance.
--   **Responsive Design:** Fully optimized for desktop, tablet, and mobile devices.
+[![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)](https://reactjs.org/)
+[![Node.js](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
 ---
 
-## 🛠 Tech Stack
+### 🚀 Live Application
+**[Visit Forge Links](https://linkforge.vercel.app)**  
+*Modern. Fast. Reliable.*
 
-| Component | Technology |
-| :--- | :--- |
-| **Frontend** | React 18, Vite, Tailwind CSS, Framer Motion |
-| **Backend** | Node.js, Express 5 (Latest) |
-| **Database** | MongoDB Atlas (Mongoose ODM) |
-| **Authentication** | JSON Web Tokens (JWT), Bcrypt.js |
-| **Charts** | Recharts |
-| **Icons** | Lucide React |
-| **Analytics** | UA-Parser-JS, GeoIP-lite |
-| **Deployment** | Vercel (Frontend), Render (Backend) |
+[Demo Video](#-demo-video) • [Features](#-key-highlights) • [Architecture](#-architecture) • [Deployment](#-deployment)
+
+</div>
 
 ---
 
-## 📐 Architecture Overview
+## 📖 Project Overview
 
-Forge Links follows a decoupled Client-Server architecture. The React frontend communicates with a RESTful Express API.
+**Forge Links** is a professional-grade SaaS platform built to transform how we share and track links. Beyond simple shortening, it provides deep behavioral analytics, custom branding, and automated expiration—all wrapped in a stunning, responsive interface.
 
+### ✨ Key Highlights
+- ⚡ **Instant Shortening:** Transform long URLs into sleek links in milliseconds.
+- 🏷️ **Custom Aliases:** Branded slugs for professional appearance (e.g., `/my-brand`).
+- 📊 **Deep Analytics:** Real-time tracking of clicks, browsers, OS, and devices.
+- 📱 **QR Code Generation:** Automated high-quality QR codes for every link.
+- 🕒 **Link Expiration:** Set "best before" dates to automatically deactivate links.
+- 🔒 **Secure Auth:** JWT-based protected routes and session management.
+- 🎨 **Modern UI/UX:** Dark-themed, glassmorphic design built with Tailwind CSS.
+
+---
+
+## 🎥 Demo Video
+
+[![Forge Links Demo](https://img.shields.io/badge/Loom-Watch_Walkthrough-blueviolet?style=for-the-badge&logo=loom)](https://www.loom.com/share/30439f7474b749548c188f78245f0d73)
+
+*This video demonstrates the core workflow: Link creation, Custom Alias validation, Expiration UI, and the comprehensive Analytics Dashboard.*
+
+---
+
+## 📸 Application Screenshots
+
+<div align="center">
+
+### 📊 Analytics Dashboard
+*Gain deep insights into your link performance at a glance.*
+<img src="./screenshots/dashboard.png" width="800" alt="Dashboard Screenshot" style="border-radius: 10px; margin-bottom: 20px;">
+
+### 📈 Detailed Link Tracking
+*Monitor traffic trends, browser distribution, and device types.*
+<img src="./screenshots/analytics.png" width="800" alt="Analytics Screenshot" style="border-radius: 10px;">
+
+</div>
+
+---
+
+## 📐 Architecture
+
+Forge Links utilizes a decoupled **MERN** (MongoDB, Express, React, Node) stack with a focus on non-blocking performance and security.
+
+### 🔐 Authentication Flow
 ```mermaid
-graph TD
-    User((User)) -->|Interacts| Frontend[React / Vite]
-    Frontend -->|API Requests| Backend[Express API]
-    Backend -->|Auth/Data| MongoDB[(MongoDB Atlas)]
-    Backend -->|Geo/UA Parsing| Analytics[Analytics Engine]
-    
-    subgraph "Request Flow"
-    Redirect[Short URL Visit] -->|Check Expiry/Active| Backend
-    Backend -->|Log Visit| MongoDB
-    Backend -->|302 Redirect| OriginalURL[Original Long URL]
-    end
+sequenceDiagram
+    participant User
+    participant Frontend
+    participant Backend
+    participant MongoDB
+    User->>Frontend: Enter Credentials
+    Frontend->>Backend: POST /api/auth/login
+    Backend->>MongoDB: Find User
+    MongoDB-->>Backend: User Data
+    Backend->>Backend: Validate Password & Generate JWT
+    Backend-->>Frontend: Token + User Data
+    Frontend->>Frontend: Store Token in LocalStorage
+    Frontend-->>User: Redirect to Dashboard
 ```
 
-### Key Workflows:
-1.  **Authentication Flow:** Uses JWT stored in HTTP-only headers/local storage for secure session management.
-2.  **Redirect Flow:** Optimized lookup with custom alias support and immediate 302 redirection.
-3.  **Analytics Flow:** Non-blocking capture of User-Agent and IP-based geolocation data during redirection.
+### 🔗 URL Creation & Management
+```mermaid
+sequenceDiagram
+    participant User
+    participant Dashboard
+    participant Backend
+    participant MongoDB
+    User->>Dashboard: Input Long URL + Optional Alias
+    Dashboard->>Backend: POST /api/urls
+    Backend->>Backend: Validate & Generate Short Code
+    Backend->>MongoDB: Save URL Document
+    MongoDB-->>Backend: Saved Doc
+    Backend-->>Dashboard: URL Data (Short Link + QR)
+    Dashboard-->>User: Show New Link Card
+```
+
+### 📈 Redirect & Analytics Tracking
+```mermaid
+sequenceDiagram
+    participant Visitor
+    participant Backend
+    participant MongoDB
+    participant OriginalURL
+    Visitor->>Backend: GET /:shortCode
+    Backend->>MongoDB: Find URL & Update Click Count
+    Backend->>Backend: Parse User-Agent & IP Geolocation
+    Backend->>MongoDB: Log Visit (Device, Browser, Country)
+    Backend-->>Visitor: 302 Redirect to OriginalURL
+    Visitor->>OriginalURL: Load Destination
+```
 
 ---
 
@@ -65,163 +119,87 @@ graph TD
 
 ```text
 D:\LinkForge\
-├── client/                # React Frontend
+├── client/                # React (Vite) Frontend
 │   ├── src/
-│   │   ├── components/    # Reusable UI & Layouts
-│   │   ├── hooks/         # Custom React Hooks (useAuth, useAnalytics)
-│   │   ├── pages/         # Page components (Dashboard, Analytics, etc.)
-│   │   ├── context/       # State management (Shell, Theme)
-│   │   └── lib/           # Utilities and API configurations
-│   └── public/            # Static assets
-└── server/                # Node.js Backend
+│   │   ├── components/    # Atomic UI components (Buttons, Cards, Modals)
+│   │   ├── hooks/         # Logic encapsulation (useAuth, useAnalytics, useUrls)
+│   │   ├── pages/         # View components (Dashboard, Settings, Auth)
+│   │   ├── context/       # Global state (Theme, Shell)
+│   │   ├── lib/           # Axios config, theme helpers, mock data
+│   │   └── services/      # API communication layer
+│   └── public/            # Static assets and icons
+└── server/                # Express.js Backend
     ├── src/
-    │   ├── controllers/   # Request handlers (Auth, URL, Analytics)
-    │   ├── models/        # Mongoose Schemas (User, Url, Visit)
-    │   ├── routes/        # API Endpoints
-    │   ├── middleware/    # Auth and validation logic
-    │   └── config/        # DB and environment setup
-    └── server.js          # Entry point
+    │   ├── controllers/   # Business logic (Auth, URL, Redirect, Analytics)
+    │   ├── models/        # Mongoose schemas (User, Url, Visit)
+    │   ├── routes/        # RESTful API endpoints
+    │   ├── middleware/    # Auth guards and request validation
+    │   └── utils/         # Helper functions (QR Gen, Token Gen, ShortCode Gen)
+    └── server.js          # Main entry point
 ```
 
 ---
 
-## ⚙️ Installation
+## 🚀 Deployment
 
-### Prerequisites
--   Node.js (v18+)
--   MongoDB Atlas Account
--   npm or yarn
-
-### Backend Setup
-1.  Navigate to the server directory:
-    ```bash
-    cd server
-    ```
-2.  Install dependencies:
-    ```bash
-    npm install
-    ```
-3.  Create a `.env` file based on the environment variables section below.
-4.  Start the development server:
-    ```bash
-    npm run dev
-    ```
-
-### Frontend Setup
-1.  Navigate to the client directory:
-    ```bash
-    cd client
-    ```
-2.  Install dependencies:
-    ```bash
-    npm install
-    ```
-3.  Create a `.env` file.
-4.  Start the frontend:
-    ```bash
-    npm run dev
-    ```
-
----
-
-## 🔑 Environment Variables
-
-### Backend (`server/.env`)
-| Variable | Description | Example |
+| Component | Platform | URL |
 | :--- | :--- | :--- |
-| `PORT` | Server Port | `5000` |
-| `MONGO_URI` | MongoDB Connection String | `mongodb+srv://...` |
-| `JWT_SECRET` | Secret for token signing | `your_secret_key` |
-| `FRONTEND_URL` | Allowed CORS origins | `http://localhost:5173` |
-| `BASE_URL` | Production URL for links | `https://api.forge.links` |
+| **Frontend** | [Vercel](https://vercel.com) | `link-forge-pi.vercel.app` |
+| **Backend** | [Render](https://render.com) | `https://linkforge-tdgx.onrender.com` |
+| **Database** | [MongoDB Atlas](https://mongodb.com/atlas) | `Managed Cluster` |
 
-### Frontend (`client/.env`)
-| Variable | Description | Example |
-| :--- | :--- | :--- |
-| `VITE_API_URL` | Backend API Endpoint | `http://localhost:5000` |
+### Environment Variables
+**Backend (`server/.env`):**
+- `PORT`: `5000`
+- `MONGO_URI`: `mongodb+srv://...`
+- `JWT_SECRET`: `your_secure_secret`
+- `FRONTEND_URL`: `https://linkforge.vercel.app` (CORS)
+- `BASE_URL`: `https://linkforge-api.render.com` (For short links)
 
----
-
-## 📖 Usage Guide
-
-1.  **Register/Login:** Create an account to access the secure dashboard.
-2.  **Shorten Link:** Paste a long URL in the creator. Optionally add a **Custom Alias**.
-3.  **Set Expiration:** Choose an optional date for the link to automatically expire.
-4.  **Manage:** From the dashboard, view all your links, copy their short URLs, or download their QR codes.
-5.  **Analyze:** Click on any link to view detailed charts showing traffic trends, top browsers, and device types.
-6.  **Redirect:** Share your short link. Visitors are logged and then instantly sent to the destination.
+**Frontend (`client/.env`):**
+- `VITE_API_URL`: `https://linkforge-api.render.com`
 
 ---
 
-## 🧠 AI Planning & Development
+## ⚙️ Installation & Setup
 
-This project was developed using a "Design-First" approach assisted by advanced AI agents.
+1. **Clone & Install:**
+   ```bash
+   git clone https://github.com/your-username/linkforge.git
+   cd linkforge
+   cd server && npm install
+   cd ../client && npm install
+   ```
 
-### Planning Process
--   **System Design:** AI tools were used to architect the data schemas and ensure optimal relationship mapping between Users and Visits.
--   **Decision Making:** Chose **Express 5** to leverage modern path-matching capabilities, despite the initial overhead of learning the new `path-to-regexp` v8 syntax.
--   **Security:** Implemented AI-reviewed validation patterns for custom aliases to prevent injection and naming collisions.
+2. **Configure Environment:**
+   Fill in the `.env` files in both `client/` and `server/` directories as per the [Deployment section](#-deployment).
 
-### Development Workflow
-We utilized a surgical editing workflow, allowing for rapid iteration on features like the **CORS Preflight** handling and **Expiring Link Redirection**. AI assistance was pivotal in debugging the transition from legacy Express wildcards to the new named parameter syntax.
-
----
-
-## 🛠 Assumptions Made
-
--   **Uniqueness:** Custom aliases must be globally unique across the platform.
--   **Analytics:** Every successful redirect is recorded; however, robots/crawlers are filtered where possible.
--   **Expiration:** Once a link expires, it redirects to a dedicated "Expired" page rather than just failing.
--   **Security:** Users can only view analytics and edit links that they have personally created.
--   **Privacy:** Geolocation is performed at the country/city level only, respecting user privacy.
+3. **Run Development:**
+   - **Backend:** `cd server && npm run dev`
+   - **Frontend:** `cd client && npm run dev`
 
 ---
 
-## 🚧 Challenges Faced
+## 🧠 AI Planning & Assumptions
 
--   **Express 5 Migration:** Moving to Express 5 required a complete rewrite of wildcard routes (`*`) to the new named parameter syntax (`{/*path}`).
--   **CORS Complexity:** Handling preflight `OPTIONS` requests across local and production environments required a robust, centralized CORS configuration.
--   **Real-time Redirection UX:** Ensuring that expired links provide a helpful UI card instead of a raw JSON error message was critical for the user experience.
--   **Data Consistency:** Managing click counts accurately while asynchronously logging detailed visit data.
-
----
-
-## 🔮 Future Improvements
-
--   **Team Workspaces:** Collaborative link management for organizations.
--   **Custom Domains:** Allow users to connect their own domains (e.g., `links.mybrand.com`).
--   **Advanced Geo-Tracking:** Heatmaps for regional traffic analysis.
--   **Link Scheduling:** Define both "Start" and "End" dates for link activity.
--   **API Access:** Developer API keys for programmatically creating and managing links.
+This project was architected using a **Surgical Development Lifecycle**:
+- **Strategy:** Priority was given to sub-300ms redirection times.
+- **Assumptions:** Custom aliases are case-insensitive and globally unique.
+- **AI Implementation:** Advanced agents were used for managing the **Express 5 path-matching migration** and optimizing **Tailwind v4** compilation.
 
 ---
 
-## 📽 Demo & Screenshots
+## 🛠 Challenges & Solutions
 
-### Live Demo
--   **Frontend:** [https://linkforge.vercel.app](https://linkforge.vercel.app)
--   **Backend:** [https://linkforge-api.render.com](https://linkforge-api.render.com)
-
-### Demo Video
--   **Loom Video:** [Watch the Walkthrough](https://www.loom.com/share/...)
--   *Demonstrating: Link creation, Custom Alias validation, Expiration UI, and Analytics Dashboard.*
-
-### Screenshots
-| Dashboard | Analytics |
-| :---: | :---: |
-| ![Dashboard](https://via.placeholder.com/400x250?text=Dashboard+Screenshot) | ![Analytics](https://via.placeholder.com/400x250?text=Analytics+Screenshot) |
+- **Express 5 Path Syntax:** Adapted to the new `{/*path}` wildcard requirements for robust route handling.
+- **Geo-Tracking:** Implemented `geoip-lite` with non-blocking visit logging to ensure redirect speed isn't compromised by DB writes.
+- **UI Consistency:** Built a custom `AppShell` with shared context to maintain theme state across page transitions.
 
 ---
 
-## 🤝 Contributors
--   **Pravin S** - *Full Stack Developer & Architect*
+## 🏆 Hackathon Statement
+This project is built with a focus on scalability and production-readiness, meeting all requirements for secure authentication, real-time analytics, and modern SaaS design.
 
 ---
 
-## 💖 Acknowledgements
--   Thanks to the **Katomaran** team for hosting the hackathon.
--   Inspiration from industry leaders like Bitly and Dub.co.
-
----
-
-## This project is a part of a hackathon run by https://katomaran.com
+### This project is a part of a hackathon run by https://katomaran.com
