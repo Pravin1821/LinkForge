@@ -10,19 +10,26 @@ const redirectToOriginalUrl = async (req, res) => {
     const url = await Url.findOne({
       $or: [{ shortCode: code }, { customAlias: aliasCode }],
     });
+    const clientUrl = process.env.CLIENT_URL || (process.env.NODE_ENV === 'production' ? `https://${req.get('host')}` : 'http://localhost:5173');
+    const getRedirectUrl = (path, params = {}) => {
+      const url = new URL(`${clientUrl.replace(/\/$/, "")}/${path}`);
+      Object.entries(params).forEach(([key, value]) => {
+        if (value) url.searchParams.append(key, value);
+      });
+      return url.toString();
+    };
+
     if (!url) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Short URL not found" });
+      return res.redirect(getRedirectUrl('not-found', { code }));
     }
     if (!url.isActive) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Short Link disabled" });
+      return res.redirect(getRedirectUrl('expired', { alias: url.shortCode, status: 'disabled' }));
     }
     if (url.expiresAt && url.expiresAt < new Date()) {
-      const clientUrl = process.env.CLIENT_URL || (process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5173');
-      return res.redirect(`${clientUrl}/expired?alias=${encodeURIComponent(url.shortCode)}`);
+      return res.redirect(getRedirectUrl('expired', { 
+        alias: url.shortCode, 
+        expiresAt: url.expiresAt.toISOString() 
+      }));
     }
     const parser = new UAParser(req.headers["user-agent"]);
     const result = parser.getResult();

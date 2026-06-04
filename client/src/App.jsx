@@ -7,6 +7,7 @@ import ExpiredLink from "./pages/ExpiredLink";
 import { DashboardPage } from "./pages/Dashboard";
 import { AnalyticsPage } from "./pages/Analytics";
 import { SettingsPage } from "./pages/Settings";
+import { NotFoundPage } from "./pages/NotFound";
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/expired" element={<ExpiredLink />} />
+      <Route path="/not-found" element={<NotFoundPage />} />
 
       <Route element={<ProtectedRoute />}>
         <Route element={<AppShell />}>
