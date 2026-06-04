@@ -199,11 +199,11 @@ We utilized a surgical editing workflow, allowing for rapid iteration on feature
 ## 📽 Demo & Screenshots
 
 ### Live Demo
--   **Frontend:** [https://linkforge.vercel.app](https://linkforge.vercel.app)
--   **Backend:** [https://linkforge-api.render.com](https://linkforge-api.render.com)
+-   **Frontend:** [https://linkforge.vercel.app](https://link-forge-pi.vercel.app/)
+-   **Backend:** [https://linkforge-api.render.com](https://linkforge-tdgx.onrender.com)
 
 ### Demo Video
--   **Loom Video:** [Watch the Walkthrough](https://www.loom.com/share/...)
+-   **Loom Video:** [Watch the Walkthrough]((https://www.loom.com/share/30439f7474b749548c188f78245f0d73))
 -   *Demonstrating: Link creation, Custom Alias validation, Expiration UI, and Analytics Dashboard.*
 
 ### Screenshots
