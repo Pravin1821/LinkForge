@@ -197,40 +197,6 @@ This project was architected using a **Surgical Development Lifecycle**:
 
 ---
 
-## 🏆 Hackathon Statement
-This project is built with a focus on scalability and production-readiness, meeting all requirements for secure authentication, real-time analytics, and modern SaaS design.
-
----
-
-<<<<<<< HEAD
-### This project is a part of a hackathon run by https://katomaran.com
-=======
-## 🔮 Future Improvements
-
--   **Team Workspaces:** Collaborative link management for organizations.
--   **Custom Domains:** Allow users to connect their own domains (e.g., `links.mybrand.com`).
--   **Advanced Geo-Tracking:** Heatmaps for regional traffic analysis.
--   **Link Scheduling:** Define both "Start" and "End" dates for link activity.
--   **API Access:** Developer API keys for programmatically creating and managing links.
-
----
-
-## 📽 Demo & Screenshots
-
-### Live Demo
--   **Frontend:** [https://linkforge.vercel.app](https://link-forge-pi.vercel.app/)
--   **Backend:** [https://linkforge-api.render.com](https://linkforge-tdgx.onrender.com)
-
-### Demo Video
--   **Loom Video:** [Watch the Walkthrough]((https://www.loom.com/share/30439f7474b749548c188f78245f0d73))
--   *Demonstrating: Link creation, Custom Alias validation, Expiration UI, and Analytics Dashboard.*
-
-### Screenshots
-| Dashboard | Analytics |
-| :---: | :---: |
-| ![Dashboard](https://via.placeholder.com/400x250?text=Dashboard+Screenshot) | ![Analytics](https://via.placeholder.com/400x250?text=Analytics+Screenshot) |
-
----
 
 ## 🤝 Contributors
 -   **Pravin S** - *Full Stack Developer & Architect*
@@ -244,4 +210,3 @@ This project is built with a focus on scalability and production-readiness, meet
 ---
 
 ## This project is a part of a hackathon run by https://katomaran.com
->>>>>>> 5fb706cfad5e67037a4870dd856b57298647416c

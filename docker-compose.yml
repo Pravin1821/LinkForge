@@ -1,0 +1,45 @@
+services:
+
+  backend:
+    build:
+      context: ./server
+      dockerfile: dockerfile
+
+    container_name: linkforge-backend
+
+    ports:
+      - "5000:5000"
+
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      MONGO_URI: ${MONGO_URI}
+      BASE_URL: ${BASE_URL}
+      JWT_SECRET: ${JWT_SECRET}
+
+    networks:
+      - linkforge-network
+
+
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+
+    container_name: linkforge-frontend
+
+    ports:
+      - "3000:80"
+
+    depends_on:
+      - backend
+
+    networks:
+      - linkforge-network
+
+
+networks:
+  linkforge-network:
+    driver: bridge

@@ -10,9 +10,22 @@ const redirectToOriginalUrl = async (req, res) => {
     const url = await Url.findOne({
       $or: [{ shortCode: code }, { customAlias: aliasCode }],
     });
-    const clientUrl = process.env.CLIENT_URL || (process.env.NODE_ENV === 'production' ? `https://${req.get('host')}` : 'http://localhost:5173');
+    // Handle multiple origins in FRONTEND_URL (common for CORS)
+    const origins = process.env.FRONTEND_URL 
+      ? process.env.FRONTEND_URL.split(',').map(u => u.trim().replace(/\/$/, ""))
+      : ['http://localhost:5173'];
+    
+    // Pick the most appropriate origin:
+    // 1. If in production, prefer the first non-localhost origin if available
+    // 2. Otherwise just pick the first one
+    let targetOrigin = origins[0];
+    if (process.env.NODE_ENV === 'production' && origins.length > 1) {
+      const prodOrigin = origins.find(o => !o.includes('localhost') && !o.includes('127.0.0.1'));
+      if (prodOrigin) targetOrigin = prodOrigin;
+    }
+
     const getRedirectUrl = (path, params = {}) => {
-      const url = new URL(`${clientUrl.replace(/\/$/, "")}/${path}`);
+      const url = new URL(`${targetOrigin}/${path}`);
       Object.entries(params).forEach(([key, value]) => {
         if (value) url.searchParams.append(key, value);
       });

@@ -6,6 +6,9 @@ export default function ExpiredLink() {
   const [searchParams] = useSearchParams();
   const alias = searchParams.get("alias");
   const expiresAtStr = searchParams.get("expiresAt");
+  const status = searchParams.get("status");
+  
+  const isDeactivated = status === "disabled";
   
   const expiryDate = expiresAtStr ? new Date(expiresAtStr) : null;
   const formattedDate = expiryDate ? expiryDate.toLocaleDateString("en-US", {
@@ -37,9 +40,13 @@ export default function ExpiredLink() {
           Expired Status
         </div>
 
-        <h1 className="mb-2 text-2xl font-bold tracking-tight text-primary">🔗 Link Expired</h1>
+        <h1 className="mb-2 text-2xl font-bold tracking-tight text-primary">
+          {isDeactivated ? "🔗 Link Deactivated" : "🔗 Link Expired"}
+        </h1>
         <p className="mb-6 text-sm text-secondary">
-          This short link has reached its expiration date and is no longer available to the public.
+          {isDeactivated 
+            ? "This short link has been manually deactivated by the owner and is no longer public."
+            : "This short link has reached its expiration date and is no longer available to the public."}
         </p>
 
         <div className="mb-8 space-y-3">
@@ -50,10 +57,14 @@ export default function ExpiredLink() {
                 <span className="font-semibold text-primary">/{alias || "unknown"}</span>
               </div>
               <div className="flex items-center justify-between text-xs">
-                <span className="text-tertiary">Expired on</span>
+                <span className="text-tertiary">{isDeactivated ? "Status" : "Expired on"}</span>
                 <span className="font-semibold text-rose-500 flex items-center gap-1">
-                  <Calendar className="h-3 w-3" />
-                  {formattedDate} {formattedTime}
+                  {isDeactivated ? (
+                    <AlertTriangle className="h-3 w-3" />
+                  ) : (
+                    <Calendar className="h-3 w-3" />
+                  )}
+                  {isDeactivated ? "Inactive" : `${formattedDate} ${formattedTime}`}
                 </span>
               </div>
             </div>
