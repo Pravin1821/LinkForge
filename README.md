@@ -13,10 +13,11 @@
 ---
 
 ### 🚀 Live Application
-**[Visit Forge Links](https://linkforge.vercel.app)**  
+**[Visit Forge Links](https://link-forge-pi.vercel.app/)**
+
 *Modern. Fast. Reliable.*
 
-[Demo Video](#-demo-video) • [Features](#-key-highlights) • [Architecture](#-architecture) • [Deployment](#-deployment)
+[Demo Video](https://www.loom.com/share/30439f7474b749548c188f78245f0d73) • [Features](#-key-highlights) • [Architecture](#-architecture) • [Deployment](#-deployment)
 
 </div>
 
@@ -165,7 +166,7 @@ D:\LinkForge\
 
 1. **Clone & Install:**
    ```bash
-   git clone https://github.com/your-username/linkforge.git
+   git clone https://github.com/Pravin1821/LinkForge.git
    cd linkforge
    cd server && npm install
    cd ../client && npm install
@@ -197,6 +198,13 @@ This project was architected using a **Surgical Development Lifecycle**:
 
 ---
 
+<<<<<<< HEAD
+=======
+## 🏆 Hackathon Statement
+This project is built with a focus on scalability and production-readiness, meeting all requirements for secure authentication, real-time analytics, and modern SaaS design.
+
+---
+>>>>>>> a2bf0b6117f903f5aafed31b628dad739814bd6f
 
 ## 🤝 Contributors
 -   **Pravin S** - *Full Stack Developer & Architect*
