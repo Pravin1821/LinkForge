@@ -1,8 +1,5 @@
 name: LinkForge CI/CD
 
-# ============================================================
-# TRIGGER
-# ============================================================
 on:
   push:
     branches:
@@ -11,22 +8,13 @@ on:
     branches:
       - main
 
-# ============================================================
-# GLOBAL ENVIRONMENT VARIABLES
-# ============================================================
 env:
-  NODE_VERSION: 20
   FRONTEND_IMAGE: pravin1821/linkforge:frontend
   BACKEND_IMAGE: pravin1821/linkforge:backend
 
-# ============================================================
-# JOBS
-# ============================================================
 jobs:
 
-  # ==========================================================
-  # JOB 1: TEST
-  # ==========================================================
+
   test:
     name: Test Application
     runs-on: ubuntu-latest
@@ -37,7 +25,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: v24.18.0
+          node-version: '20'
 
       - name: Install Backend Dependencies
         working-directory: ./server
@@ -57,9 +45,6 @@ jobs:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
         run: npm run build
 
-  # ==========================================================
-  # JOB 2: BUILD AND PUSH DOCKER IMAGES
-  # ==========================================================
   docker:
     name: Build and Push Docker Images
     runs-on: ubuntu-latest
@@ -78,22 +63,14 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # ------------------------------------------------------
-      # Backend image
-      # ------------------------------------------------------
       - name: Build Backend Docker Image
         uses: docker/build-push-action@v6
         with:
           context: ./server
           file: ./server/dockerfile
           push: true
-          tags: |
-            ${{ env.BACKEND_IMAGE }}:latest
-            ${{ env.BACKEND_IMAGE }}:${{ github.sha }}
+          tags: ${{ env.BACKEND_IMAGE }}
 
-      # ------------------------------------------------------
-      # Frontend image
-      # ------------------------------------------------------
       - name: Build Frontend Docker Image
         uses: docker/build-push-action@v6
         with:
@@ -102,13 +79,8 @@ jobs:
           push: true
           build-args: |
             VITE_API_URL=${{ secrets.VITE_API_URL }}
-          tags: |
-            ${{ env.FRONTEND_IMAGE }}:latest
-            ${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
+          tags: ${{ env.FRONTEND_IMAGE }}
 
-  # ==========================================================
-  # JOB 3: DEPLOY
-  # ==========================================================
   deploy:
     name: Deploy Application
     runs-on: ubuntu-latest
@@ -121,9 +93,6 @@ jobs:
       - name: Deploy Frontend
         run: curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"
 
-  # ==========================================================
-  # JOB 4: HEALTH CHECK
-  # ==========================================================
   health-check:
     name: Check Deployment
     runs-on: ubuntu-latest
@@ -147,9 +116,6 @@ jobs:
             --retry-delay 10 \
             "${{ secrets.FRONTEND_URL }}"
 
-  # ==========================================================
-  # JOB 5: SUCCESS EMAIL
-  # ==========================================================
   success-email:
     name: Send Success Email
     runs-on: ubuntu-latest
@@ -168,32 +134,13 @@ jobs:
           to: pravincriss21@gmail.com
           from: "LinkForge Deployment <${{ secrets.MAIL_USERNAME }}>"
           body: |
-            ========================================
-                  LINKFORGE DEPLOYMENT SUCCESS
-            ========================================
-
+            LinkForge deployment succeeded.
             Repository: ${{ github.repository }}
-            Branch:     ${{ github.ref_name }}
-            Commit:     ${{ github.sha }}
-
+            Branch: ${{ github.ref_name }}
+            Commit: ${{ github.sha }}
             Frontend: ${{ secrets.FRONTEND_URL }}
-            Backend:  ${{ secrets.BACKEND_URL }}
+            Backend: ${{ secrets.BACKEND_URL }}
 
-            Docker Hub Images:
-              Frontend: ${{ env.FRONTEND_IMAGE }}:latest
-              Backend:  ${{ env.BACKEND_IMAGE }}:latest
-
-            Status: SUCCESS
-              - Tests passed
-              - Docker images built
-              - Docker images pushed to Docker Hub
-              - Deployment completed
-              - Health checks passed
-            ========================================
-
-  # ==========================================================
-  # JOB 6: FAILURE EMAIL
-  # ==========================================================
   failure-email:
     name: Send Failure Email
     runs-on: ubuntu-latest
@@ -215,17 +162,9 @@ jobs:
           to: pravincriss21@gmail.com
           from: "LinkForge Deployment <${{ secrets.MAIL_USERNAME }}>"
           body: |
-            ========================================
-                    LINKFORGE DEPLOYMENT FAILED
-            ========================================
-
+            LinkForge deployment failed.
             Repository: ${{ github.repository }}
-            Branch:     ${{ github.ref_name }}
-            Commit:     ${{ github.sha }}
+            Branch: ${{ github.ref_name }}
+            Commit: ${{ github.sha }}
+            Check: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
-            The CI/CD pipeline failed.
-            Check GitHub Actions:
-            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
-            Status: FAILED
-            ========================================
