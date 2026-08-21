@@ -100,11 +100,24 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - deploy
+    env:
+      BACKEND_URL: ${{ secrets.BACKEND_URL || 'https://linkforge-tdgx.onrender.com' }}
+      FRONTEND_URL: ${{ secrets.FRONTEND_URL || 'https://link-forge-pi.vercel.app' }}
     steps:
+      - name: Validate deployment URLs
+        run: |
+          for endpoint in BACKEND_URL FRONTEND_URL; do
+            url="${!endpoint}"
+            if [[ "$url" =~ ^https?://(localhost|127\.0\.0\.1)(:|/) ]]; then
+              echo "${endpoint} points to '$url'. Health checks run on GitHub-hosted runners and require a public deployed URL."
+              exit 1
+            fi
+          done
+
       - name: Check Backend
         run: |
           for attempt in {1..12}; do
-            if curl --fail --silent --show-error --location --max-time 10 "${{ secrets.BACKEND_URL }}"; then
+            if curl --fail --silent --show-error --location --max-time 10 "$BACKEND_URL"; then
               exit 0
             fi
             echo "Backend is not ready (attempt ${attempt}/12); retrying in 10 seconds..."
@@ -116,7 +129,7 @@ jobs:
       - name: Check Frontend
         run: |
           for attempt in {1..12}; do
-            if curl --fail --silent --show-error --location --max-time 10 "${{ secrets.FRONTEND_URL }}"; then
+            if curl --fail --silent --show-error --location --max-time 10 "$FRONTEND_URL"; then
               exit 0
             fi
             echo "Frontend is not ready (attempt ${attempt}/12); retrying in 10 seconds..."
