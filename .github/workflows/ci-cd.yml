@@ -145,13 +145,14 @@ jobs:
     needs:
       - health-check
     env:
+      ENABLE_EMAIL_NOTIFICATIONS: ${{ secrets.ENABLE_EMAIL_NOTIFICATIONS }}
       MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
       MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
     steps:
       - name: Send Success Email
-        if: ${{ env.MAIL_USERNAME != '' && env.MAIL_PASSWORD != '' }}
+        if: ${{ env.ENABLE_EMAIL_NOTIFICATIONS == 'true' && env.MAIL_USERNAME != '' && env.MAIL_PASSWORD != '' }}
         continue-on-error: true
-        uses: dawidd6/action-send-mail@v6
+        uses: dawidd6/action-send-mail@v9
         with:
           server_address: smtp.gmail.com
           server_port: 465
@@ -178,13 +179,14 @@ jobs:
       - deploy
       - health-check
     env:
+      ENABLE_EMAIL_NOTIFICATIONS: ${{ secrets.ENABLE_EMAIL_NOTIFICATIONS }}
       MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
       MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
     steps:
       - name: Send Failure Email
-        if: ${{ env.MAIL_USERNAME != '' && env.MAIL_PASSWORD != '' }}
+        if: ${{ env.ENABLE_EMAIL_NOTIFICATIONS == 'true' && env.MAIL_USERNAME != '' && env.MAIL_PASSWORD != '' }}
         continue-on-error: true
-        uses: dawidd6/action-send-mail@v6
+        uses: dawidd6/action-send-mail@v9
         with:
           server_address: smtp.gmail.com
           server_port: 465
