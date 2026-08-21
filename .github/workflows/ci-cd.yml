@@ -13,8 +13,6 @@ env:
   BACKEND_IMAGE: pravin1821/linkforge:backend
 
 jobs:
-
-
   test:
     name: Test Application
     runs-on: ubuntu-latest
@@ -25,7 +23,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: |
+            server/package-lock.json
+            client/package-lock.json
 
       - name: Install Backend Dependencies
         working-directory: ./server
@@ -99,22 +101,29 @@ jobs:
     needs:
       - deploy
     steps:
-      - name: Wait for deployment
-        run: sleep 30
-
       - name: Check Backend
         run: |
-          curl --fail \
-            --retry 5 \
-            --retry-delay 10 \
-            "${{ secrets.BACKEND_URL }}"
+          for attempt in {1..12}; do
+            if curl --fail --silent --show-error --location --max-time 10 "${{ secrets.BACKEND_URL }}"; then
+              exit 0
+            fi
+            echo "Backend is not ready (attempt ${attempt}/12); retrying in 10 seconds..."
+            sleep 10
+          done
+          echo "Backend did not become ready in time."
+          exit 1
 
       - name: Check Frontend
         run: |
-          curl --fail \
-            --retry 5 \
-            --retry-delay 10 \
-            "${{ secrets.FRONTEND_URL }}"
+          for attempt in {1..12}; do
+            if curl --fail --silent --show-error --location --max-time 10 "${{ secrets.FRONTEND_URL }}"; then
+              exit 0
+            fi
+            echo "Frontend is not ready (attempt ${attempt}/12); retrying in 10 seconds..."
+            sleep 10
+          done
+          echo "Frontend did not become ready in time."
+          exit 1
 
   success-email:
     name: Send Success Email
@@ -167,4 +176,3 @@ jobs:
             Branch: ${{ github.ref_name }}
             Commit: ${{ github.sha }}
             Check: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
